@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Strategi Algoritmik</title>
+</head>
+<body>
+    <canvas id="myCanvas">
+        
+    </canvas>
+</body>
+
+<script>
+    let koordinats = [[765, 435],[742.5, 484], [814, 604],[896.5, 555],[896, 653],[874, 920],[1186, 915]];
+    let distances = [
+        [0, 1.4 ,7.6 ,2.3 ,3.9 ,3.5 ,9],
+        [1.4 ,0 ,9.8 ,2.3 ,3.9 ,3.5 ,9],
+        [8.3 ,6.9, 0 ,6.1 ,5.8 ,4.2 ,4.7],
+        [3.8 ,3.9 ,5.3 ,0 ,1.6 ,1.1 ,6.7],
+        [2.9 ,4.5 ,5.9 ,1.4 ,0 ,1.7 ,7.2],
+        [5.5 ,4.2 ,4.2 ,3.3 ,1.6 ,0 ,5.6],
+        [9.8 ,8.4 ,5.4 ,7.6 ,7.3 ,5.7 ,0],
+    ]
+
+        let c = document.getElementById("myCanvas");
+        let scale = 0.4;
+        let ctx = c.getContext("2d");
+        let img = new Image();
+        img.src = "peta.jpeg";
+        img.onload = ()=>{
+            c.width = img.width*scale;
+            c.height = img.height*scale;
+            ctx.drawImage(img, 0, 0, img.width*scale, img.height*scale);
+            
+            for (let index = 0; index < koordinats.length; index++) {
+                koordinat(index);
+            }
+            garis_koordinat(0,1);
+            
+        }
+    
+    function koordinat(lokasi) {
+        ctx.beginPath();
+        ctx.arc(koordinats[lokasi][0],koordinats[lokasi][1], 10, 0, 2 * Math.PI);
+        ctx.stroke();
+    }
+
+    function garis_koordinat(lokasi1, lokasi2) {
+        ctx.moveTo(koordinats[lokasi1][0],koordinats[lokasi1][1]);
+        ctx.lineTo(koordinats[lokasi2][0],koordinats[lokasi2][1]);
+        ctx.stroke();
+    }
+
+    function greedyTSP() {
+        let n = koordinats.length;
+        let visited = new Array(n).fill(false);
+        let path = [];
+        let current = 0;
+        visited[current] = true;
+        path.push(current);
+
+        for (let i = 0; i < n - 1; i++) {
+            let next = getNextCity(current, visited);
+            visited[next] = true;
+            path.push(next);
+            current = next;
+        }
+
+        return path;
+    }
+
+    function getNextCity(current, visited) {
+        let next = -1;
+        let minDistance = Infinity;
+
+        for (let i = 0; i < koordinats.length; i++) {
+            if (!visited[i] && distances[current][i] < minDistance) {
+                minDistance = distances[current][i];
+                next = i;
+            }
+        }
+
+        return next;
+    }
+
+</script>
+</html>
+
