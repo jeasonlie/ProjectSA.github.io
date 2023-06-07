@@ -8,9 +8,7 @@
     <title>Project Strategi Algoritmik</title>
 </head>
 <body>
-    <canvas id="myCanvas">
-        
-    </canvas>
+    <canvas id="myCanvas"></canvas>
 </body>
 
 <script>
@@ -23,7 +21,10 @@
         [2.9 ,4.5 ,5.9 ,1.4 ,0 ,1.7 ,7.2],
         [5.5 ,4.2 ,4.2 ,3.3 ,1.6 ,0 ,5.6],
         [9.8 ,8.4 ,5.4 ,7.6 ,7.3 ,5.7 ,0],
-    ]
+    ];
+    let jumlah_makanan = [0, 5, 3, 1, 4, 3, 2];
+    let maximum_jumlah = 20;
+    let profit_makanan = [0, 50000, 30000, 10000, 40000, 30000, 20000];
 
         let c = document.getElementById("myCanvas");
         let scale = 0.4;
@@ -39,7 +40,12 @@
                 koordinat(index);
             }
             garis_koordinat(0,1);
-            
+            let path = greedyTSP();
+            console.log("Optimal path:", path);
+            for (let index = 0; index < path.length-1; index++) {
+                garis_koordinat(path[index], path[index+1]);
+                
+            }
         }
     
     function koordinat(lokasi) {
@@ -59,16 +65,25 @@
         let visited = new Array(n).fill(false);
         let path = [];
         let current = 0;
+        let sum_jumlah_makanan = 0;
+        let sum_profit_makanan = 0;
+
         visited[current] = true;
         path.push(current);
 
         for (let i = 0; i < n - 1; i++) {
             let next = getNextCity(current, visited);
-            visited[next] = true;
-            path.push(next);
-            current = next;
+            if (next != -1) {
+                visited[next] = true;
+                if (sum_jumlah_makanan + jumlah_makanan[next] <= maximum_jumlah) {
+                    path.push(next);
+                    current = next;
+                    sum_jumlah_makanan += jumlah_makanan[next];
+                    sum_profit_makanan += profit_makanan[next];
+                }
+            }
         }
-
+        path.push(0);
         return path;
     }
 
@@ -82,10 +97,10 @@
                 next = i;
             }
         }
-
         return next;
     }
 
+    
 </script>
 </html>
 
